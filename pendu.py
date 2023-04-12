@@ -1,4 +1,6 @@
 import random
+from tkinter import *
+from tkinter.messagebox import showinfo 
 
 # Liste de mots pour le jeu
 mots = ["naruto", "one piece", "fairy tail", "vinland saga", "my hero academia", "l'attaque des titans", "hunterxhunter", "blue lock", "gambling school", "genshin impact"]
@@ -9,90 +11,95 @@ mot = random.choice(mots)
 # Initialiser les variables
 lettres_trouvees = []
 lettres_fausses = []
-pendu = ['''
-   +---+
-   |   |
-       |
-       |
-       |
-       |
-=========''', '''
-   +---+
-   |   |
-   O   |
-       |
-       |
-       |
-=========''', '''
-   +---+
-   |   |
-   O   |
-   |   |
-       |
-       |
-=========''', '''
-   +---+
-   |   |
-   O   |
-  /|   |
-       |
-       |
-=========''', '''
-   +---+
-   |   |
-   O   |
-  /|\\  |
-       |
-       |
-=========''', '''
-   +---+
-   |   |
-   O   |
-  /|\\  |
-  /    |
-       |
-=========''', '''
-   +---+
-   |   |
-   O   |
-  /|\\  |
-  / \\  |
-       |
-=========''']
+erreurs = 0
 
 # Fonction pour afficher le pendu
-def afficher_pendu(erreurs):
-    print(pendu[erreurs])
+def afficher_pendu():
+    global erreurs
+    pendu.config(image=pendu[erreurs])
 
 # Fonction pour afficher le mot avec les lettres trouvées
-def afficher_mot(mot, lettres_trouvees):
+def afficher_mot():
+    mot_affiche = ""
     for lettre in mot:
         if lettre in lettres_trouvees:
-            print(lettre, end=" ")
+            mot_affiche += lettre + " "
         else:
-            print("_", end=" ")
-    print("")
+            mot_affiche += "_ "
+    mot_label.config(text=mot_affiche)
 
-# Boucle principale du jeu
-while True:
-    # Afficher le pendu et le mot actuel
-    afficher_pendu(len(lettres_fausses))
-    afficher_mot(mot, lettres_trouvees)
+# Fonction pour afficher les lettres utilisées
+def afficher_lettres():
+    lettres_label.config(text="Lettres utilisées : " + ", ".join(lettres_fausses))
 
-    # Demander à l'utilisateur de saisir une lettre
-    lettre = input("Entrez une lettre : ")
+# Fonction pour afficher les tentatives restantes
+def afficher_tentatives():
+    tentatives_label.config(text="Tentatives restantes : " + str(len(pendu) - erreurs - 1))
 
-    # Vérifier si la lettre est dans le mot
-    if lettre in mot:
+# Fonction pour vérifier si le joueur a gagné ou perdu
+def verifier_resultat():
+    global erreurs
+    if len(lettres_fausses) == len(pendu) - 1:
+        afficher_pendu()
+        showinfo("Jeu du Pendu", f"Vous avez perdu ! Le mot était {mot}")
+        rejouer()
+    elif set(mot) == set(lettres_trouvees):
+        showinfo("Jeu du Pendu", f"Félicitations, vous avez gagné ! Le mot était {mot}")
+        rejouer()
+
+# Fonction pour rejouer
+def rejouer():
+    global mot, lettres_trouvees, lettres_fausses, erreurs
+    mot = random.choice(mots)
+    lettres_trouvees = []
+    lettres_fausses = []
+    erreurs = 0
+    afficher_pendu()
+    afficher_mot()
+    afficher_lettres()
+    afficher_tentatives()
+
+# Fonction pour essayer une lettre
+def essayer_lettre():
+    global erreurs
+    lettre = lettre_entry.get().lower()
+    if lettre in lettres_trouvees or lettre in lettres_fausses:
+        showinfo("Jeu du Pendu", "Vous avez déjà essayé cette lettre !")
+    elif lettre in mot:
         lettres_trouvees.append(lettre)
+        afficher_mot()
+        verifier_resultat()
     else:
         lettres_fausses.append(lettre)
+        erreurs += 1
+        afficher_pendu()
+        afficher_lettres()
+        afficher_tentatives()
+        verifier_resultat()
+    lettre_entry.delete(0, END)
 
-    # Vérifier si le joueur a gagné ou perdu
-    if len(lettres_fausses) == len(pendu) - 1:
-        afficher_pendu(len(lettres_fausses))
-        print("Vous avez perdu ! Le mot était", mot)
-        break
-    elif set(mot) == set(lettres_trouvees):
-        print("Félicitations, vous avez gagné ! Le mot était", mot)
-        break
+# Créer l'interface graphique
+fenetre = Tk()
+fenetre.title("Jeu du Pendu")
+fenetre.geometry("400x400")
+
+# Créer les widgets
+label_titre = Label(fenetre, text="Jeu du Pendu", bg="yellow")
+label_titre.pack()
+
+mot_label = Label(fenetre, text="", font=("Arial", 24))
+mot_label.pack(pady=20)
+
+lettres_label = Label(fenetre, text="Lettres utilisées :")
+lettres_label.pack(pady=10)
+
+tentatives_label = Label(fenetre, text="Tentatives restantes :")
+tentatives_label.pack(pady=10)
+
+lettre_entry = Entry(fenetre, width=5)
+lettre_entry.pack(pady=10)
+
+essayer_lettre_button = Button(fenetre, text="Essayer", command=lambda: essayer_lettre(lettre_entry.get(), mot, lettres_trouvees, lettres_fausses, mot_label, lettres_label, tentatives_label))
+essayer_lettre_button.pack(pady=10)
+
+fenetre.mainloop()
