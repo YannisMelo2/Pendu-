@@ -1,9 +1,9 @@
 import random
 from tkinter import *
-from tkinter.messagebox import showinfo 
+from tkinter.messagebox import showinfo
 
 # Liste de mots pour le jeu
-mots = ["naruto", "one piece", "fairy tail", "vinland saga", "my hero academia", "l'attaque des titans", "hunterxhunter", "blue lock", "gambling school", "genshin impact"]
+mots = ["naruto", "onepiece", "fairytail", "vinlandsaga", "myheroacademia", "l'attaquedestitans", "hunterxhunter", "bluelock", "gamblingschool", "genshinimpact"]
 
 # Choisir un mot au hasard
 mot = random.choice(mots)
@@ -16,7 +16,7 @@ erreurs = 0
 # Fonction pour afficher le pendu
 def afficher_pendu():
     global erreurs
-    pendu.config(image=pendu_images[erreurs])
+    canvas.itemconfig(pendu, image=pendu_images[erreurs])
 
 # Fonction pour afficher le mot avec les lettres trouvées
 def afficher_mot():
@@ -34,7 +34,11 @@ def afficher_lettres():
 
 # Fonction pour afficher les tentatives restantes
 def afficher_tentatives():
-    tentatives_label.config(text="Tentatives restantes : " + str(len(pendu_images) - erreurs - 1))
+    tentatives_restantes = len(pendu_images) - erreurs - 1
+    if tentatives_restantes == 1:
+        tentatives_label.config(text="Il ne vous reste plus qu'une tentative !")
+    else:
+        tentatives_label.config(text="Tentatives restantes : " + str(tentatives_restantes))
 
 # Fonction pour vérifier si le joueur a gagné ou perdu
 def verifier_resultat():
@@ -59,9 +63,6 @@ def rejouer():
     afficher_lettres()
     afficher_tentatives()
 
-from tkinter import *
-from tkinter.messagebox import showinfo
-
 # Fonction pour essayer une lettre
 def essayer_lettre():
     global erreurs
@@ -82,15 +83,28 @@ def essayer_lettre():
         afficher_tentatives()
         verifier_resultat()
     lettre_entry.delete(0, END)
-
-# Créer l'interface graphique
+#Créer l'interface graphique
 fenetre = Tk()
 fenetre.title("Jeu du Pendu")
 fenetre.geometry("400x400")
 
-# Créer les widgets
-pendu = Label(fenetre, image=pendu_images[0])
-pendu.pack(pady=20)
+#Liste d'images pour le pendu
+pendu_images = [
+PhotoImage(file="Pendu-/pendu0.png"),
+PhotoImage(file="Pendu-/pendu1.png"),
+PhotoImage(file="Pendu-/pendu2.png"),
+PhotoImage(file="Pendu-/pendu3.png"),
+PhotoImage(file="Pendu-/pendu4.png"),
+PhotoImage(file="Pendu-/pendu5.png"),
+PhotoImage(file="Pendu-/pendu6.png"),
+PhotoImage(file="Pendu-/pendu7.png")
+]
+
+#Créer les widgets
+canvas = Canvas(fenetre, width=500, height=500)
+canvas.pack()
+
+pendu = canvas.create_image(0, 0, anchor="nw", image=pendu_images[0])
 
 label_titre = Label(fenetre, text="Jeu du Pendu", bg="yellow")
 label_titre.pack()
@@ -110,5 +124,12 @@ lettre_entry.pack(pady=10)
 essayer_lettre_button = Button(fenetre, text="Essayer", command=essayer_lettre)
 essayer_lettre_button.pack(pady=10)
 
+#Appeler les fonctions pour afficher les éléments initiaux
+afficher_mot()
+afficher_tentatives()
+
+#Boucle principale
 fenetre.mainloop()
+
+
 
