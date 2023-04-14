@@ -101,7 +101,7 @@ PhotoImage(file="Pendu-/pendu7.png")
 ]
 
 #Créer les widgets
-canvas = Canvas(fenetre, width=500, height=500)
+canvas = Canvas(fenetre, width=1096, height=500)
 canvas.pack()
 
 pendu = canvas.create_image(0, 0, anchor="nw", image=pendu_images[0])
