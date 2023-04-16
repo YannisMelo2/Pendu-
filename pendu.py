@@ -53,6 +53,7 @@ def verifier_resultat():
 
 # Fonction pour rejouer
 def rejouer():
+
     global mot, lettres_trouvees, lettres_fausses, erreurs
     mot = random.choice(mots)
     lettres_trouvees = []
@@ -62,6 +63,7 @@ def rejouer():
     afficher_mot()
     afficher_lettres()
     afficher_tentatives()
+    canvas.itemconfig(pendu, image=pendu_images[0])
 
 # Fonction pour essayer une lettre
 def essayer_lettre():
@@ -100,29 +102,36 @@ PhotoImage(file="Pendu-/pendu6.png"),
 PhotoImage(file="Pendu-/pendu7.png")
 ]
 
-#Créer les widgets
-canvas = Canvas(fenetre, width=1096, height=500)
+#créer les widgets
+canvas = Canvas(fenetre, width=1096, height=500, bg="green")
 canvas.pack()
 
 pendu = canvas.create_image(0, 0, anchor="nw", image=pendu_images[0])
 
-label_titre = Label(fenetre, text="Jeu du Pendu", bg="yellow")
+label_titre = Label(fenetre, text="JEU DU PENDU", bg="green", fg="white")
 label_titre.pack()
 
-mot_label = Label(fenetre, text="", font=("Arial", 24))
+mot_label = Label(fenetre, text="", font=("Arial", 24), bg="green", fg="white")
 mot_label.pack(pady=20)
 
-lettres_label = Label(fenetre, text="Lettres utilisées :")
+lettres_label = Label(fenetre, text="Lettres utilisées :", bg="green", fg="white")
 lettres_label.pack(pady=10)
 
-tentatives_label = Label(fenetre, text="Tentatives restantes :")
+tentatives_label = Label(fenetre, text="Tentatives restantes :", bg="green", fg="white")
 tentatives_label.pack(pady=10)
 
-lettre_entry = Entry(fenetre, width=5)
+lettre_entry = Entry(fenetre, width=5, bg="white", fg="black")
 lettre_entry.pack(pady=10)
 
-essayer_lettre_button = Button(fenetre, text="Essayer", command=essayer_lettre)
+essayer_lettre_button = Button(fenetre, text="Essayer", bg="white", fg="black", command=essayer_lettre)
 essayer_lettre_button.pack(pady=10)
+
+rejouer_button = Button(fenetre, text="Rejouer", bg="white", fg="black", command=rejouer, state=DISABLED)
+rejouer_button.pack(pady=10)
+
+quitter_button = Button(fenetre, text="Quitter", bg="white", fg="black", command=fenetre.quit)
+quitter_button.pack(pady=10)
+
 
 #Appeler les fonctions pour afficher les éléments initiaux
 afficher_mot()
