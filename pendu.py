@@ -6,7 +6,7 @@ from tkinter.messagebox import askyesno
 
 
 # Liste de mots pour le jeu
-mots = ["naruto", "onepiece", "fairytail", "vinlandsaga", "myheroacademia", "l'attaquedestitans", "hunterxhunter", "bluelock", "gamblingschool", "genshinimpact"]
+mots = ["BlueLock","PsychoPass", "CodeGeass", "OnePunchMan", "SwordArtOnline", "Bleach", "FullmetalAlchemist", "NeonGenesisEvangelion", "Fate/StayNight", "SailorMoon", "DetectiveConan", "BlackClover", "Bleach", "Boruto", "DemonSlayer", "DrStone", "DragonBall","onepiece", "fairytail", "vinlandsaga", "myheroacademia", "lattaquedestitans", "hunterxhunter", "bluelock", "gamblingschool"]
 
 # Choisir un mot au hasard
 mot = random.choice(mots)
@@ -40,7 +40,7 @@ def afficher_lettres():
 def afficher_tentatives():
     tentatives_restantes = len(pendu_images) - erreurs - 1
     if tentatives_restantes == 1:
-        tentatives_label.config(text="Il ne vous reste plus qu'une tentative !")
+        tentatives_label.config(text="ATTETION, Il ne vous reste plus qu'une tentative !")
     else:
         tentatives_label.config(text="Tentatives restantes : " + str(tentatives_restantes))
 
@@ -49,38 +49,23 @@ def verifier_resultat():
     global erreurs
     if len(lettres_fausses) == len(pendu_images) - 1:
         afficher_pendu()
-        showinfo("Jeu du Pendu", f"Vous avez perdu ! Le mot était {mot}")
+        showinfo("Jeu du Pendu", f"Vous avez lamentablement perdu ! Le mot était {mot}, tu auras plus de chances la prochaines fois!")
         rejouer()
     elif set(mot) == set(lettres_trouvees):
         showinfo("Jeu du Pendu", f"Félicitations, vous avez gagné ! Le mot était {mot}")
         rejouer()
 
-#fonction pour donner son nom à la Partie
-def demander_nom():
-    nom_joueur = simpledialog.askstring("Nom du joueur", "Quel est votre nom ?")
-    return nom_joueur
-
-#Fonction pour sauvegarder le score
-def enregistrer_scores():
-    try:
-        with open("scores.txt", "r") as f:
-            scores = f.readlines()
-        scores = [score.strip() for score in scores]
-        return scores
-    except FileNotFoundError:
-        return []
-
 #fonction pour afficher le score
 def montrer_scores():
-    scores = enregistrer_scores()
+    scores = afficher_tentatives()
     if scores:
         score_str = "Historique des scores :\n\n" + "\n".join(scores)
     else:
         score_str = "Aucun score enregistré pour l'instant."
-    showinfo("Scores", score_str)
+    showinfo("Scores")
 
 #Fonction pour donner un indice au joueur
-def get_hint():
+def indice():
     hint_type = random.choice(["lettre", "nombre"])
     if hint_type == "lettre":
         letters_not_found = set(mot) - set(lettres_trouvees)
@@ -100,9 +85,9 @@ def essayer_lettre():
     global erreurs
     lettre = lettre_entry.get().lower()
     if not lettre.isalpha() or len(lettre) != 1:
-        showinfo("Jeu du Pendu", "Veuillez entrer une seule lettre de l'alphabet !")
+        showinfo("Jeu du Pendu", "Ce que tu as entré n'est pas valable !")
     elif lettre in lettres_trouvees or lettre in lettres_fausses:
-        showinfo("Jeu du Pendu", "Vous avez déjà essayé cette lettre !")
+        showinfo("Jeu du Pendu", "Vous avez déjà essayé cette lettre ! soit un peu plus attentif !")
     elif lettre in mot:
         lettres_trouvees.append(lettre)
         afficher_mot()
@@ -123,7 +108,7 @@ def sauvegarder_score(nom, tentatives):
 
 #personnalisation fonction aide
 def aide() : 
-    showinfo("Règles du pendu", "Le but du jeu est simple : deviner toute les lettres qui doivent composer un mot, éventuellement avec un nombre limité de tentatives et des thèmes fixés à l'avance. A chaque fois que le joueur devine une lettre, celle-ci est affichée. Dans le cas contraire, le dessin d'un pendu se met à apparaître...")
+    showinfo("Règles du pendu", "Le but du jeu est simple : deviner toute les lettres qui doivent composer un mot, avec un nombre limité de tentatives. A chaque fois que le joueur devine une lettre, celle-ci est affichée. Dans le cas contraire, le dessin d'un pendu se met à apparaître. Maintenant, à vous ce jouez, montrez nous de quoi vous êtes capables !")
 
 #Créer l'interface graphique
 fenetre = Tk()
@@ -144,14 +129,14 @@ PhotoImage(file="pendu7.png")
 
 #Fonction pour quitter la partie depuis le menu
 def quitter(): 
-    if askyesno('Fermeture', 'Êtes-vous sûr de vouloir fermer ?'): #si oui afficher les messages suivants
+    if askyesno('Fermeture', 'Êtes-vous sûr de vouloir Quitter le jeu ?'): 
         fenetre.destroy()
 
 # Fonction pour rejouer
 def rejouer():
     global mot, lettres_trouvees, lettres_fausses, erreurs
 
-    rejouer = askyesno("Jeu du Pendu", "Voulez-vous jouer à nouveau")
+    rejouer = askyesno("Jeu du Pendu", "Voulez-vous Rejouer?")
 
     mot = random.choice(mots)
     lettres_trouvees = []
@@ -195,7 +180,7 @@ rejouer_button.pack(pady=10)
 quitter_button = Button(fenetre, text="Quitter", bg="white", fg="black", command=fenetre.quit)
 quitter_button.pack(pady=10)
 
-bouton1=Button(fenetre,text='Indice', command=get_hint)
+bouton1=Button(fenetre,text='Indice', command=indice)
 bouton1.pack(padx=15)
 bouton1.place(x=50, y=50)
 
