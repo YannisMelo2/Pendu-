@@ -108,7 +108,7 @@ def sauvegarder_score(nom, tentatives):
 
 #personnalisation fonction aide
 def aide() : 
-    showinfo("Règles du pendu", "Le but du jeu est simple : deviner toute les lettres qui doivent composer un mot, avec un nombre limité de tentatives. A chaque fois que le joueur devine une lettre, celle-ci est affichée. Dans le cas contraire, le dessin d'un pendu se met à apparaître. Maintenant, à vous ce jouez, montrez nous de quoi vous êtes capables !")
+    showinfo("Règles du pendu", "Le but du jeu est simple : deviner toute les lettres qui doivent composer un mot, avec un nombre limité de tentatives. A chaque fois que le joueur devine une lettre, celle-ci est affichée. Dans le cas contraire, le dessin d'un pendu se met à apparaître. Maintenant, à vous de jouez, montrez nous de quoi vous êtes capables !")
 
 #Créer l'interface graphique
 fenetre = Tk()
